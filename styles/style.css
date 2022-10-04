@@ -30,14 +30,14 @@
 }
 
 .titleForms {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: #4E0077;
     text-align: center;
 }
 
 .textForm {
     color: grey;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .headerValue {
@@ -70,4 +70,5 @@
 .buttonSubmit {
     color: white;
     padding: 0.7rem;
+    border: none;
 }
