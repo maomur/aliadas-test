@@ -3,4 +3,71 @@
     padding: 0px;
     box-sizing: border-box;
     font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.logo {
+    height: 30px;
+}
+
+.logo img {
+    width: 180px;
+    padding: 10px;
+}
+
+.mainColor {
+    background-color: #4E0077;
+}
+
+.containerHeader {
+    height: 170px;
+    display: flex;
+    margin-bottom: -100px;
+}
+
+.headerTitle {
+    padding: 1.5rem;
+}
+
+.titleForms {
+    font-size: 1.3rem;
+    color: #4E0077;
+    text-align: center;
+}
+
+.textForm {
+    color: grey;
+    font-size: 0.8rem;
+}
+
+.headerValue {
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.headerSubTitle {
+    color: white;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.colorTop {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.menuColor {
+    height: 60px;
+    align-items: end;
+}
+
+.menuColor img {
+    height: 8px;
+}
+
+.buttonSubmit {
+    color: white;
+    padding: 0.7rem;
 }
