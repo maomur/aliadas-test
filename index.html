@@ -14,6 +14,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=Lexend+Deca&family=Roboto:ital,wght@0,300;0,400;0,900;1,500;1,700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./styles/style.css">
     <meta name="autor" content="">
     <link rel="stylesheet" href="">
@@ -28,7 +29,7 @@
     <section class="menuColor container-fluid p-0 m-0 d-flex">
         <img src="./assets/images/color-top.jpg" alt="barra-superior" class="colorTop">
     </section>
-    <section class="mainColor d-flex containerHeader">
+    <section class="mainColor d-flex containerHeader container-lg-">
         <div class="container headerTitle">
             <p class="headerValue mb-0">$1'000.000</p>
             <p class="headerSubTitle mb-0">SALARIO MÍNIMO</p>
@@ -44,27 +45,56 @@
             <p class="textForm">Para comenzar, ingresa los siguientes datos.</p>
         </div>
         <div class="row">
-            <div class="my-2">
+            <div class="my-2 col-12 col-lg-4 test-alert">
                 <small>Fecha Inicial</small>
-                <input class="form-control" type="date">
+                <div class="d-flex align-items-center">
+                    <input class="form-control" type="date">
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
             </div>
-            <div class="my-2">
+            <div class="my-2 col-12 col-lg-4 test-alert">
                 <small>Fecha Final</small>
-                <input class="form-control" type="date">
+                <div class="d-flex align-items-center">
+                    <input class="form-control" type="date">
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
             </div>
-            <div class="my-2">
+            <div class="my-2 col-12 col-lg-4 test-alert">
+                <small>Tipo de Trabajo</small>
+                <div class="d-flex align-items-center">
+                    <select class="form-select" name=" ">
+                        <option value="unselect" default></option>
+                        <option value="">Trabajo a tiempo completo</option>
+                        <option value="">Trabajo por días</option>
+                        <option value="">Trabajo por horas</option>
+                    </select>
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
+            </div>
+            <div class="my-2 col-12 col-lg-4 test-alert">
                 <small>Salario Mensual</small>
-                <input class="form-control" type="number">
+                <div class="d-flex align-items-center">
+                    <input class="form-control" type="number">
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
             </div>
-            <div class="my-2">
+            <div class="my-2 col-12 col-lg-4 test-alert">
                 <small>Auxilio de Transporte</small>
-                <input class="form-control" type="number">
+                <div class="d-flex align-items-center">
+                    <input class="form-control" type="number">
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
             </div>
-            <div class="my-2">
+            <div class="my-2 col-12 col-lg-4 test-alert">
                 <small>Otros pagos recibidos</small>
-                <input class="form-control" type="number">
+                <div class="d-flex align-items-center">
+                    <input class="form-control" type="number">
+                    <i class="bi bi-question-circle-fill iconInput mx-2"></i>
+                </div>
             </div>
-            <input type="submit" value="Siguiente" class="mainColor buttonSubmit my-5">
+            <div class="my-4 col-12 col-lg-4">
+                <input type="submit" value="Siguiente" class="mainColor buttonSubmit">
+            </div>
         </div>
 
     </div>

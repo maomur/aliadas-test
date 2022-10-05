@@ -35,6 +35,10 @@
     text-align: center;
 }
 
+.iconInput {
+    color: #4E0077;
+}
+
 .textForm {
     color: grey;
     font-size: 0.9rem;
@@ -71,4 +75,5 @@
     color: white;
     padding: 0.7rem;
     border: none;
+    width: 100%;
 }
