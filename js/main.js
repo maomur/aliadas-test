@@ -26,11 +26,21 @@ class App {
     inputHorasTrabajoDia = document.querySelector('#horasTrabajoDia');
     divAuxilioTransporte = document.querySelector('#divAuxilioTransporte');
     inputAuxilioTransporte = document.querySelector('#auxilioTransporte');
+    botonLiquidaciones = document.querySelector('#botonLiquidaciones');
 
 
     constructor() {
+        this.localIni();
         this.selector();
         this.validacion();
+    }
+
+
+    localIni() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.array = JSON.parse(localStorage.getItem('Liquidaciones')) || [];
+            this.imprimir(this.array);
+        })
     }
 
     selector() {
@@ -62,6 +72,7 @@ class App {
 
 
     validacion() {
+
         botonCalcular.addEventListener('click', () => {
 
             if (!this.inputFechaInicio.value) {
@@ -154,11 +165,22 @@ class App {
                     `
                 this.contenidoModal.appendChild(modal);
             }
-
             else { this.ejecutar() };
         }
         )
 
+    }
+
+
+    sincLocalS() {
+        localStorage.setItem('Liquidaciones', JSON.stringify(this.array));
+    }
+
+    misLiquidaciones() {
+        this.botonLiquidaciones.addEventListener('click', () => {
+            this.localIni();
+            this.imprimir();
+        })
     }
 
     // ESCUCHADORES LISTENERS
@@ -330,6 +352,8 @@ class App {
         const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat)
 
         this.array.push(addItem);
+
+        this.sincLocalS();
 
         this.imprimir()
     }
@@ -650,6 +674,7 @@ class App {
             })
 
         }
+        this.sincLocalS();
     }
 }
 
