@@ -39,7 +39,7 @@ class App {
     localIni() {
         document.addEventListener('DOMContentLoaded', () => {
             this.array = JSON.parse(localStorage.getItem('Liquidaciones')) || [];
-            this.imprimir(this.array);
+            this.ejecutar();
         })
     }
 
