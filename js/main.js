@@ -4,7 +4,6 @@ import { Items } from '../classes/Item.js'
 class App {
 
     array = [];
-    idCurrent = 0;
 
     // CAPTURA DE INPUTS
     inputFechaInicio = document.querySelector('#fechaInicio');
@@ -27,19 +26,26 @@ class App {
     divAuxilioTransporte = document.querySelector('#divAuxilioTransporte');
     inputAuxilioTransporte = document.querySelector('#auxilioTransporte');
     botonLiquidaciones = document.querySelector('#botonLiquidaciones');
+    inputPrimaSi = document.querySelector('#primaSi');
+    divPrima = document.querySelector('#divPrima')
+    fechaButton = document.querySelector('#fechaButton');
+
 
 
     constructor() {
-        this.localIni();
         this.selector();
+        this.validacionPrima();
         this.validacion();
+        this.localIni();
+        this.misLiquidaciones();
+        let restaFechas;
+
     }
 
 
     localIni() {
         document.addEventListener('DOMContentLoaded', () => {
             this.array = JSON.parse(localStorage.getItem('Liquidaciones')) || [];
-            this.imprimir();
         })
     }
 
@@ -71,11 +77,73 @@ class App {
     }
 
 
+    validacionPrima() {
+
+        this.inputFechaFin.addEventListener('change', () => {
+
+            const inicial = new Date(this.inputFechaInicio.value);
+            const inicialMes = inicial.getMonth() + 1;
+
+            const final = new Date(this.inputFechaFin.value);
+            const finalMes = final.getMonth() + 1;
+
+            const inicialYear = inicial.getFullYear();
+
+            const finalYear = final.getFullYear();
+
+            let itemPrima = false;
+            let showPrima;
+
+            if (inicialMes <= 6 && finalMes > 6) {
+                itemPrima = true;
+            }
+            if (inicialMes <= 6 && finalMes <= 6) {
+                itemPrima = false;
+            }
+            if (inicialMes > 6 && finalMes > 6) {
+                itemPrima = false;
+            }
+            this.activarPrima(itemPrima)
+        })
+        this.inputFechaInicio.addEventListener('click', () => {
+            this.inputFechaFin.value = "";
+        })
+    }
+
+    activarPrima(itemPrima) {
+
+        if (itemPrima === true) {
+            this.divPrima.className = 'd-block';
+        } else {
+            this.divPrima.className = 'd-none';
+        }
+    }
+
     validacion() {
 
         botonCalcular.addEventListener('click', () => {
 
-            if (!this.inputFechaInicio.value) {
+            const inicial = new Date(this.inputFechaInicio.value);
+            const inicialMes = inicial.getMonth() + 1;
+
+            const final = new Date(this.inputFechaFin.value);
+            const finalMes = final.getMonth() + 1;
+
+            const inicialYear = inicial.getFullYear();
+
+            const finalYear = final.getFullYear();
+
+            if (inicialYear != finalYear) {
+                this.contenidoModal.innerHTML = "";
+                const modal = document.createElement('div');
+                modal.innerHTML = `
+                    <h2>ATENCIÓN</h2>
+                    <h4>Solo puedes hacer liquidaciones <span class='text-danger'>DEL MISMO AÑO</span>.  Para liquidar años diferentes, debes hacer <span class="text-danger">CADA UNA POR SEPARADO<span>.
+                    `
+                this.contenidoModal.appendChild(modal);
+            }
+
+            else if (!this.inputFechaInicio.value) {
                 this.contenidoModal.innerHTML = "";
                 const modal = document.createElement('div');
                 modal.innerHTML = `
@@ -157,20 +225,13 @@ class App {
                 this.contenidoModal.appendChild(modal);
 
             } else if (!this.inputOtrosPagos.value) {
-                this.contenidoModal.innerHTML = "";
-                const modal = document.createElement('div');
-                modal.innerHTML = `
-                <h2>ATENCIÓN</h2>
-                    <h4>El campo <span class='text-danger'>OTROS PAGOS RECIBIDOS</span>, no puede quedar vacío</h4>
-                    `
-                this.contenidoModal.appendChild(modal);
+                this.inputOtrosPagos.value = 0;
+                this.imprimir();
             }
             else { this.ejecutar() };
         }
         )
-
     }
-
 
     sincLocalS() {
         localStorage.setItem('Liquidaciones', JSON.stringify(this.array));
@@ -179,11 +240,9 @@ class App {
     misLiquidaciones() {
         this.botonLiquidaciones.addEventListener('click', () => {
             this.localIni();
-            this.imprimir();
+            this.imprimir(this.array);
         })
     }
-
-    // ESCUCHADORES LISTENERS
 
     ejecutar = () => {
 
@@ -191,18 +250,44 @@ class App {
 
         // VARIABLES TIEMPO COMPLETO MES
 
-        this.fechaInicio = this.inputFechaInicio.value
+        this.fechaInicio = this.inputFechaInicio.value;
+
+        this.fechaInicioDate = new Date(this.fechaInicio);
+
         this.fechaFin = this.inputFechaFin.value;
+
+        this.fechaFinDate = new Date(this.fechaFin);
+
+        this.fechaMitad = new Date('2022-06-30');
+
+
+        if (this.fechaInicioDate < this.fechaMitad && this.fechaFinDate < this.fechaMitad) {
+            console.log('LIQUIDACIÓN SENCILLA SOLO PRIMER SEMESTRE')
+        } if (this.fechaInicioDate < this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
+            console.log('LIQUIDACIÓN COMPLICADA, DOS SEMESTRES')
+        } if (this.fechaInicioDate > this.fechaMitad && this.fechaInicioDate > this.fechaMitad) {
+            console.log('LIQUIDACIÓN SENCILLA SOLO SEGUNDO SEMESTRE')
+        }
+
+
+        this.fechaContable = this.day360(this.fechaInicio, this.fechaFin);
+
+        //this.day360(this.fechaInicio, this.fechaFin)
+
         this.tipoTrabajo = this.inputTipoTrabajo.value;
+
+        this.primaSi = this.inputPrimaSi.checked;
 
         this.salarioMensual = parseInt(this.inputSalarioMensual.value);
 
         this.salarioMensualFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.salarioMensual);
 
         this.salarioHora = parseInt(this.inputSalarioHora.value);
+
         this.salarioDia = parseInt(this.inputSalarioDia.value);
 
         this.otrosPagos = parseInt(this.inputOtrosPagos.value);
+
         this.otrosPagosFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.otrosPagos);
 
         this.deducciones = this.salarioMensual * 0.08;
@@ -210,23 +295,14 @@ class App {
         this.deduccionesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.deducciones);
 
         this.salarioRecibidoMensual = this.salarioMensual - this.deducciones;
+
         this.salarioRecibidoMensualFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.salarioRecibidoMensual);
 
         this.auxilioTransporte = parseInt(this.inputAuxilioTransporte.value);
 
         this.auxilioTransporteFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.auxilioTransporte);
 
-        const fechaInicioFormateada = new Date(this.fechaInicio);
-        const inicioMilisegundos = fechaInicioFormateada.getTime();
-
-        const fechaFinFormateada = new Date(this.fechaFin);
-        const finMilisegundos = fechaFinFormateada.getTime();
-
-        const totalMilisegundos = Math.abs(finMilisegundos - inicioMilisegundos);
-
-        const milisegundosDia = 24 * 60 * 60 * 1000;
-
-        this.diasLaborados = totalMilisegundos / milisegundosDia;
+        this.diasLaborados = this.fechaContable;
 
         const baseSalarial = salarioMensual + auxilioTransporte + otrosPagos;
 
@@ -236,7 +312,11 @@ class App {
 
         const salarioDiario = salarioMensual / 30;
 
-        this.totalCesantias = Math.round((this.salarioMensual + this.auxilioTransporte + this.otrosPagos) * parseInt(this.diasLaborados) / 360);
+        this.totalCesantias = Math.round((
+            this.salarioMensual
+            + this.auxilioTransporte
+            + this.otrosPagos)
+            * parseInt(this.diasLaborados) / 360);
 
         this.totalCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantias);
 
@@ -244,17 +324,40 @@ class App {
 
         this.totalInteresesCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantias);
 
-        this.totalPrima = Math.round(((this.salarioMensual + this.auxilioTransporte + parseInt(this.inputOtrosPagos.value)) * this.diasLaborados / 360) / 2);
+        this.diasLaboradosSemestreUno;
 
-        this.totalPrimaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrima);
+        this.diasLaboradosSemestreDos;
+
+        this.totalPrimaJunio = Math.round(((
+            this.salarioMensual
+            + this.auxilioTransporte
+            + parseInt(this.inputOtrosPagos.value))
+            * this.diasLaborados / 360)
+            / 2);
+
+        this.totalPrimaDiciembre = Math.round(((
+            this.salarioMensual
+            + this.auxilioTransporte
+            + parseInt(this.inputOtrosPagos.value))
+            * this.diasLaborados / 360)
+            / 2);
+
+        this.totalPrimaJunioFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaJunio);
+
+        this.totalPrimaDiciembreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiciembre);
 
         this.totalVacaciones = Math.round((this.salarioMensual * this.diasLaborados) / 720);
 
         this.totalVacacionesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalVacaciones);
 
-        this.totalLiquidacionMes = this.totalCesantias + this.totalInteresesCesantias + (this.totalPrima * 2) + this.totalVacaciones;
+        this.totalLiquidacionMes = this.totalCesantias
+            + this.totalInteresesCesantias
+            + this.totalPrimaJunio
+            + this.totalPrimaDiciembre
+            + this.totalVacaciones;
 
         this.totalLiquidacionMesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionMes);
+
 
 
         //VARIABLES TRABAJO POR DÍA
@@ -265,20 +368,29 @@ class App {
         this.diasSemanaTrabajo = this.inputDiasTrabajadosSemana.value;
         this.semanasMes = 4.33;
         this.diasLaboradosMensualizados = parseInt(this.diasSemanaTrabajo) * this.semanasMes;
+
+
         this.salarioPromedioMensualDia = this.diasLaboradosMensualizados * this.salarioPactadoDia;
+
         this.mesesTrabajados = this.diasLaborados / 30;
         this.valorLiquidacionPrestacionesDia = (this.salarioPromedioMensualDia / 30) * 21;
         this.auxilioTransporteActualDiario = this.auxilioTransporte / 30;
-        this.auxilioTransporteActualMensual = this.diasLaboradosMensualizados * this.auxilioTransporteActualDiario;
+
+        this.auxilioTransporteActualMensual = Math.round(this.diasLaboradosMensualizados * this.auxilioTransporteActualDiario);
+
+
+        this.auxilioTransporteActualMensualFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.auxilioTransporteActualMensual);
+
         this.salarioBaseLiquidacionDia = this.salarioPromedioMensualDia + this.auxilioTransporteActualMensual + this.otrosPagos;
 
         this.diasTrabajadosAnuales = this.diasLaboradosMensualizados * this.mesesTrabajados;
 
-        this.deduccionesDia = this.valorLiquidacionPrestacionesDia * 0.08;
+        this.deduccionesDia = Math.round(this.valorLiquidacionPrestacionesDia * 0.08);
 
         this.deduccionesDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.deduccionesDia);
 
         this.salarioMensualRecibidoDia = this.salarioPromedioMensualDia - this.deduccionesDia;
+
 
         this.salarioMensualRecibidoDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.salarioMensualRecibidoDia);
 
@@ -349,7 +461,7 @@ class App {
     }
 
     addArray = () => {
-        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat)
+        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.totalLiquidacionMesFormatJunio, this.totalLiquidacionMesFormatDiciembre)
 
         this.array.push(addItem);
 
@@ -359,10 +471,11 @@ class App {
     }
 
     eliminarItem(e) {
+        alert('Registro Eliminado');
         this.array = this.array.filter((item) => {
             return item.id !== e.target.dataset.id;
         })
-
+        this.sincLocalS();
         this.imprimir();
     }
 
@@ -370,94 +483,98 @@ class App {
 
         this.contenidoModal.innerHTML = "";
 
-        if (this.tipoTrabajo === 'tiempo-completo') {
+        this.array.forEach((item) => {
 
-            this.array.forEach((item) => {
+            if (item.tipoTrabajo === 'tiempo-completo') {
 
                 this.contenidoModal.dataset.id = item.id;
 
                 const modal = document.createElement('div');
 
                 modal.innerHTML = `
-                <section class="head-data">
-                    <div>
-                        <p class="head-data-title">Tus Resultados:</p>
-                        <p class="head-data-subtitle">Ingreso Mensual</p>
-                    </div>
-                </section>
-                <section class="form-container">
-                    <h2 class="titulo-bloque mb-4">Información General</h2>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Fecha Inicial</h3>
-                            <h4>${item.fechaInicio}</h4>
-                        </div>
-                        <div>
-                            <h3>Fecha Final</h3>
-                            <h4>${item.fechaFin}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Días Laborados</h3>
-                            <h4>${item.diasLaborados}</h4>
-                        </div>
-                        <div>
-                            <h3>Salario Mensual</h3>
-                            <h4>${item.salarioMensualFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Auxilio de Transporte</h3>
-                            <h4>${item.auxilioTransporteFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Deducciones</h3>
-                            <h4>${item.deduccionesFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Otros Pagos Recibidos</h3>
-                            <h4>${item.otrosPagosFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Salario Recibido</h3>
-                            <h4>${item.salarioRecibidoMensualFormat}</h4>
-                        </div>
-                    </div>
-                </section>
-                <section class="form-container">
-                    <h2 class="titulo-bloque">Tu Liquidación</h2>
-                    <div class="resultados">
-                        <h4>Cesantías:</h4>
-                        <h4>${item.totalCesantiasFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Intereses Cesantías:</h4>
-                        <h4>${item.totalInteresesCesantiasFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Junio:</h4>
-                        <h4>${item.totalPrimaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Diciembre:</h4>
-                        <h4>${item.totalPrimaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Vacaciones:</h4>
-                        <h4>${item.totalVacacionesFormat}</h4>
-                    </div>
-                    <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
-                                
-                    </section>
-                    
-                    <p class="texto-aclaracion">
-                    *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
-                    informativos. </p>
-                    `
+                        <section class="head-data">
+                            <div>
+                                <p class="head-data-title">Tus Resultados:</p>
+                                <p class="head-data-subtitle">Ingreso Mensual</p>
+                            </div>
+                        </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque mb-4">Información General</h2>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Fecha Inicial</h3>
+                                    <h4>${item.fechaInicio}</h4>
+                                </div>
+                                <div>
+                                    <h3>Fecha Final</h3>
+                                    <h4>${item.fechaFin}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Días Laborados</h3>
+                                    <h4>${item.diasLaborados}</h4>
+                                </div>
+                                <div>
+                                    <h3>Salario Mensual</h3>
+                                    <h4>${item.salarioMensualFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Auxilio de Transporte</h3>
+                                    <h4>${item.auxilioTransporteFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Seguridad Social</h3>
+                                    <h4>${item.deduccionesFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Otros Pagos Recibidos</h3>
+                                    <h4>${item.otrosPagosFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Salario Recibido</h3>
+                                    <h4>${item.salarioRecibidoMensualFormat}</h4>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Prima Junio:</h4>
+                                <h4>${item.totalPrimaJunioFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Prima Diciembre:</h4>
+                                <h4>${item.totalPrimaDiciembreFormat}</h4>
+                            </div>
+                            
+                  
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                            `
 
                 const botonEliminar = document.createElement('div');
 
@@ -469,94 +586,91 @@ class App {
 
                 this.contenidoModal.appendChild(modal);
                 this.contenidoModal.appendChild(botonEliminar)
-            })
-        }
 
-        if (this.tipoTrabajo === 'por-dias') {
+            }
 
-            this.array.forEach((item) => {
-
+            if (item.tipoTrabajo === 'por-dias') {
                 const modal = document.createElement('div');
                 modal.innerHTML = `
-            <section class="head-data">
-                    <div>
-                        <p class="head-data-title">Tus Resultados:</p>
-                        <p class="head-data-subtitle">Trabajo por Días</p>
-                    </div>
-                </section>
-                <section class="form-container">
-                    <h2 class="titulo-bloque mb-4">Información General</h2>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Fecha Inicial</h3>
-                            <h4>${item.fechaInicio}</h4>
-                        </div>
-                        <div>
-                            <h3>Fecha Final</h3>
-                            <h4>${item.fechaFin}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Días de Liquidación</h3>
-                            <h4>${item.diasLaborados}</h4>
-                        </div>
-                        <div>
-                            <h3>Salario Pactado Diario</h3>
-                            <h4>${item.salarioPactadoDiaFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Auxilio de Transporte</h3>
-                            <h4>${item.auxilioTransporteFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Deducciones</h3>
-                            <h4>${item.deduccionesDiaFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Otros Pagos</h3>
-                            <h4>${item.otrosPagosFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Salario Promedio Mensual </h3>
-                            <h4>${item.salarioMensualRecibidoDiaFormat}</h4>
-                        </div>
-                    </div>
-                </section>
-                <section class="form-container">
-                    <h2 class="titulo-bloque">Tu Liquidación</h2>
-                    <div class="resultados">
-                        <h4>Cesantías:</h4>
-                        <h4>${item.totalCesantiasDiaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Intereses Cesantías:</h4>
-                        <h4>${item.totalInteresesCesantiasDiaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Junio:</h4>
-                        <h4>${item.totalPrimaDiaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Diciembre:</h4>
-                        <h4>${item.totalPrimaDiaFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Vacaciones:</h4>
-                        <h4>${item.totalVacacionesDiaFormat}</h4>
-                    </div>
-                    <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat} *</h2>
+                    <section class="head-data">
+                            <div>
+                                <p class="head-data-title">Tus Resultados:</p>
+                                <p class="head-data-subtitle">Trabajo por Días</p>
+                            </div>
+                        </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque mb-4">Información General</h2>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Fecha Inicial</h3>
+                                    <h4>${item.fechaInicio}</h4>
+                                </div>
+                                <div>
+                                    <h3>Fecha Final</h3>
+                                    <h4>${item.fechaFin}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Días de Liquidación</h3>
+                                    <h4>${item.diasLaborados}</h4>
+                                </div>
+                                <div>
+                                    <h3>Salario Pactado Diario</h3>
+                                    <h4>${item.salarioPactadoDiaFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Auxilio de Transporte</h3>
+                                    <h4>${item.auxilioTransporteActualMensualFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Seguridad Social</h3>
+                                    <h4>${item.deduccionesDiaFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Otros Pagos</h3>
+                                    <h4>${item.otrosPagosFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Salario Promedio Mensual </h3>
+                                    <h4>${item.salarioMensualRecibidoDiaFormat}</h4>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasDiaFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasDiaFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Prima Junio:</h4>
+                                <h4>${item.totalPrimaDiaFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Prima Diciembre:</h4>
+                                <h4>${item.totalPrimaDiaFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesDiaFormat}</h4>
+                            </div>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat} *</h2>
 
-                </section>
+                        </section>
 
-                <p class="texto-aclaracion">
-                    *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
-                    informativos. </p>
-                `
+                        <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
 
                 const botonEliminar = document.createElement('div');
 
@@ -568,99 +682,93 @@ class App {
 
                 this.contenidoModal.appendChild(modal);
                 this.contenidoModal.appendChild(botonEliminar)
+            }
 
 
-            })
-        }
-
-
-        if (this.tipoTrabajo === 'por-horas') {
-
-            this.array.forEach((item) => {
-
+            if (item.tipoTrabajo === 'por-horas') {
                 const modal = document.createElement('div');
                 modal.innerHTML = `
-                <section class="head-data">
-                    <div>
-                        <p class="head-data-title">Tus Resultados:</p>
-                        <p class="head-data-subtitle">Ingreso por Horas</p>
-                    </div>
-                </section>
-                <section class="form-container">
-                    <h2 class="titulo-bloque mb-4">Información General</h2>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Fecha Inicial</h3>
-                            <h4>${item.fechaInicio}</h4>
-                        </div>
-                        <div>
-                            <h3>Fecha Final</h3>
-                            <h4>${item.fechaFin}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Días Laborados</h3>
-                            <h4>${item.diasLaborados}</h4>
-                        </div>
-                        <div>
-                            <h3>Promedio Mensual</h3>
-                            <h4>${item.promedioSalarioHoraMensualFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Auxilio de Transporte</h3>
-                            <h4>${item.promedioTransporteMensualHoraFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Deducciones</h3>
-                            <h4>${item.deduccionesHoraFormat}</h4>
-                        </div>
-                    </div>
-                    <div class="bloque-data">
-                        <div>
-                            <h3>Otros Pagos</h3>
-                            <h4>${item.otrosPagosFormat}</h4>
-                        </div>
-                        <div>
-                            <h3>Salario Hora</h3>
-                            <h4>${item.salarioPactadoHoraFormat}</h4>
-                        </div>
-                    </div>
-                </section>
+                        <section class="head-data">
+                            <div>
+                                <p class="head-data-title">Tus Resultados:</p>
+                                <p class="head-data-subtitle">Ingreso por Horas</p>
+                            </div>
+                        </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque mb-4">Información General</h2>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Fecha Inicial</h3>
+                                    <h4>${item.fechaInicio}</h4>
+                                </div>
+                                <div>
+                                    <h3>Fecha Final</h3>
+                                    <h4>${item.fechaFin}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Días Laborados</h3>
+                                    <h4>${item.diasLaborados}</h4>
+                                </div>
+                                <div>
+                                    <h3>Promedio Mensual</h3>
+                                    <h4>${item.promedioSalarioHoraMensualFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Auxilio de Transporte</h3>
+                                    <h4>${item.promedioTransporteMensualHoraFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Seguridad Social</h3>
+                                    <h4>${item.deduccionesHoraFormat}</h4>
+                                </div>
+                            </div>
+                            <div class="bloque-data">
+                                <div>
+                                    <h3>Otros Pagos</h3>
+                                    <h4>${item.otrosPagosFormat}</h4>
+                                </div>
+                                <div>
+                                    <h3>Salario Hora</h3>
+                                    <h4>${item.salarioPactadoHoraFormat}</h4>
+                                </div>
+                            </div>
+                        </section>
 
-                <section class="form-container">
-                    <h2 class="titulo-bloque">Tu Liquidación</h2>
-                    <div class="resultados">
-                        <h4>Cesantías:</h4>
-                        <h4>${item.totalCesantiasHoraFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Intereses Cesantías:</h4>
-                        <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Junio:</h4>
-                        <h4>${item.totalPrimaHoraFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Prima Diciembre:</h4>
-                        <h4>${item.totalPrimaHoraFormat}</h4>
-                    </div>
-                    <div class="resultados">
-                        <h4>Vacaciones:</h4>
-                        <h4>${item.totalVacacionesHoraFormat}</h4>
-                    </div>
-                    <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat} *</h2>
-                    
-                </section>
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasHoraFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Prima Junio:</h4>
+                                <h4>${item.totalPrimaHoraFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Prima Diciembre:</h4>
+                                <h4>${item.totalPrimaHoraFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesHoraFormat}</h4>
+                            </div>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat} *</h2>
+                            
+                        </section>
 
-                <p class="texto-aclaracion">
-                    *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
-                    informativos. </p>
+                        <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
 
-                `
+                        `
                 const botonEliminar = document.createElement('div');
 
                 botonEliminar.innerHTML = `
@@ -671,11 +779,54 @@ class App {
 
                 this.contenidoModal.appendChild(modal);
                 this.contenidoModal.appendChild(botonEliminar)
-            })
-
-        }
-        this.sincLocalS();
+            }
+        })
     }
+
+    day360(sd, fd, m) {
+        var d1 = new Date(sd);
+        var d2 = new Date(fd);
+        var d1_1 = d1;
+        var d2_1 = d2;
+        var method = m || false;
+        var d1_y = d1.getFullYear();
+        var d2_y = d2.getFullYear();
+        var dy = 0;
+        var d1_m = d1.getMonth();
+        var d2_m = d2.getMonth();
+        var dm = 0;
+        var d1_d = d1.getDate();
+        var d2_d = d2.getDate();
+        var dd = 0;
+        if (method) {
+            // euro
+            if (d1_d == 31) d1_d = 30;
+            if (d2_d == 31) d2_d = 30;
+        } else {
+            // american NASD
+            if (d1_d == 31) d1_d = 30;
+            if (d2_d == 31) {
+                if (d1_d < 30) {
+                    if (d2_m == 11) {
+                        d2_y = d2_y + 1;
+                        d2_m = 0;
+                        d2_d = 1;
+                    } else {
+                        d2_m = d2_m + 1;
+                        d2_d = 1;
+                    }
+                } else {
+                    d2_d = 30;
+                }
+            }
+        }
+        dy = d2_y - d1_y;
+        dm = d2_m - d1_m;
+        dd = d2_d - d1_d;
+        //this.fechaContable = (parseFloat(dy * 360 + dm * 30 + dd));
+        return (parseFloat(dy * 360 + dm * 30 + dd))
+    }
+
 }
 
 

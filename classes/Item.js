@@ -1,5 +1,5 @@
 export class Items {
-    constructor(fechaInicio, fechaFin, tipoTrabajo, otrosPagos, otrosPagosFormat, salarioMensual, salarioMensualFormat, id, diasLaborados, auxilioTransporte, auxilioTransporteFormat, deducciones, deduccionesFormat, salarioRecibidoMensual, salarioRecibidoMensualFormat, totalCesantias, totalCesantiasFormat, totalInteresesCesantias, totalInteresesCesantiasFormat, totalPrima, totalPrimaFormat, totalVacaciones, totalVacacionesFormat, totalLiquidacionMes, totalLiquidacionMesFormat, salarioPactadoDia, salarioPactadoDiaFormat, diasSemanaTrabajo, semanasMes, diasLaboradosMensualizados, salarioPromedioMensualDia, mesesTrabajados, valorLiquidacionPrestacionesDia, auxilioTransporteActualDiario, auxilioTransporteActualMensual, salarioBaseLiquidacionDia, diasTrabajadosAnuales, deduccionesDia, deduccionesDiaFormat, salarioMensualRecibidoDia, salarioMensualRecibidoDiaFormat, totalCesantiasDia, totalCesantiasDiaFormat, totalInteresesCesantiasDia, totalInteresesCesantiasDiaFormat, totalPrimaDia, totalPrimaDiaFormat, totalVacacionesDia, totalVacacionesDiaFormat, totalLiquidacionDia, totalLiquidacionDiaFormat, promedioSalarioHoraMensual, promedioSalarioHoraMensualFormat, promedioTransporteMensualHora, promedioTransporteMensualHoraFormat, salarioPactadoHoraFormat, deduccionesHora, deduccionesHoraFormat, totalCesantiasHora, totalCesantiasHoraFormat, totalInteresesCesantiasHora, totalInteresesCesantiasHoraFormat, totalPrimaHora, totalPrimaHoraFormat, totalVacacionesHora, totalVacacionesHoraFormat, totalLiquidacionHora, totalLiquidacionHoraFormat) {
+    constructor(fechaInicio, fechaFin, tipoTrabajo, otrosPagos, otrosPagosFormat, salarioMensual, salarioMensualFormat, id, diasLaborados, primaSi, auxilioTransporte, auxilioTransporteFormat, deducciones, deduccionesFormat, salarioRecibidoMensual, salarioRecibidoMensualFormat, totalCesantias, totalCesantiasFormat, totalInteresesCesantias, totalInteresesCesantiasFormat, totalPrima, totalPrimaFormat, totalVacaciones, totalVacacionesFormat, totalLiquidacionMes, totalLiquidacionMesFormat, salarioPactadoDia, salarioPactadoDiaFormat, diasSemanaTrabajo, semanasMes, diasLaboradosMensualizados, salarioPromedioMensualDia, mesesTrabajados, valorLiquidacionPrestacionesDia, auxilioTransporteActualDiario, auxilioTransporteActualMensualFormat, auxilioTransporteActualMensual, salarioBaseLiquidacionDia, diasTrabajadosAnuales, deduccionesDia, deduccionesDiaFormat, salarioMensualRecibidoDia, salarioMensualRecibidoDiaFormat, totalCesantiasDia, totalCesantiasDiaFormat, totalInteresesCesantiasDia, totalInteresesCesantiasDiaFormat, totalPrimaDia, totalPrimaDiaFormat, totalVacacionesDia, totalVacacionesDiaFormat, totalLiquidacionDia, totalLiquidacionDiaFormat, promedioSalarioHoraMensual, promedioSalarioHoraMensualFormat, promedioTransporteMensualHora, promedioTransporteMensualHoraFormat, salarioPactadoHoraFormat, deduccionesHora, deduccionesHoraFormat, totalCesantiasHora, totalCesantiasHoraFormat, totalInteresesCesantiasHora, totalInteresesCesantiasHoraFormat, totalPrimaHora, totalPrimaHoraFormat, totalVacacionesHora, totalVacacionesHoraFormat, totalLiquidacionHora, totalLiquidacionHoraFormat, totalPrimaJunioFormat, totalPrimaDiciembreFormat) {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.tipoTrabajo = tipoTrabajo;
@@ -9,6 +9,7 @@ export class Items {
         this.salarioMensualFormat = salarioMensualFormat;
         this.id = `${Date.now()}`;
         this.diasLaborados = diasLaborados;
+        this.primaSi = primaSi;
         this.auxilioTransporte = auxilioTransporte;
         this.auxilioTransporteFormat = auxilioTransporteFormat;
         this.deducciones = deducciones;
@@ -34,6 +35,7 @@ export class Items {
         this.mesesTrabajados = mesesTrabajados;
         this.valorLiquidacionPrestacionesDia = valorLiquidacionPrestacionesDia;
         this.auxilioTransporteActualDiario = auxilioTransporteActualDiario;
+        this.auxilioTransporteActualMensualFormat = auxilioTransporteActualMensualFormat;
         this.auxilioTransporteActualMensual = auxilioTransporteActualMensual;
         this.salarioBaseLiquidacionDia = salarioBaseLiquidacionDia;
         this.diasTrabajadosAnuales = diasTrabajadosAnuales;
@@ -68,5 +70,7 @@ export class Items {
         this.totalVacacionesHoraFormat = totalVacacionesHoraFormat;
         this.totalLiquidacionHora = totalLiquidacionHora;
         this.totalLiquidacionHoraFormat = totalLiquidacionHoraFormat;
+        this.totalPrimaJunioFormat = totalPrimaJunioFormat;
+        this.totalPrimaDiciembreFormat = totalPrimaDiciembreFormat;
     }
 }
