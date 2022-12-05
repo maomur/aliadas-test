@@ -258,17 +258,7 @@ class App {
 
         this.fechaFinDate = new Date(this.fechaFin);
 
-        this.fechaMitad = new Date('2022-06-30');
-
-
-        if (this.fechaInicioDate < this.fechaMitad && this.fechaFinDate < this.fechaMitad) {
-            console.log('LIQUIDACIÓN SENCILLA SOLO PRIMER SEMESTRE')
-        } if (this.fechaInicioDate < this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
-            console.log('LIQUIDACIÓN COMPLICADA, DOS SEMESTRES')
-        } if (this.fechaInicioDate > this.fechaMitad && this.fechaInicioDate > this.fechaMitad) {
-            console.log('LIQUIDACIÓN SENCILLA SOLO SEGUNDO SEMESTRE')
-        }
-
+        this.fechaMitad = new Date('2022-07-01');
 
         this.fechaContable = this.day360(this.fechaInicio, this.fechaFin);
 
@@ -311,6 +301,68 @@ class App {
         const sumatoria = parseInt(this.inputOtrosPagos.value) + 1000;
 
         const salarioDiario = salarioMensual / 30;
+
+
+        if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
+            console.log('LIQUIDACIÓN SENCILLA SOLO PRIMER SEMESTRE')
+            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
+            console.log('DIAS DEL PRIMER SEMESTER:', this.diasPrimerSemestre);
+            this.totalCesantiasMesPrimerSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasPrimerSemestre) / 360);
+
+            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestre)
+            console.log('--------------------------------------------------')
+
+
+        } else if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
+            console.log('LIQUIDACIÓN SENCILLA SOLO SEGUNDO SEMESTRE')
+
+            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
+
+            this.totalCesantiasMesSegundoSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasSegundoSemestre) / 360);
+
+            console.log('DIAS DEL SEGUNDO SEMESTER:', this.diasSegundoSemestre, 'LIQUIDACIÓN:', this.totalCesantiasMesSegundoSemestre);
+            console.log('--------------------------------------------------')
+
+        } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
+            console.log('LIQUIDACIÓN COMPLICADA, DOS SEMESTRES');
+
+            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
+            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
+            console.log('DIAS DEL PRIMER SEMESTER:', this.diasPrimerSemestre);
+            console.log('DIAS DEL SEGUNDO SEMESTER:', this.diasSegundoSemestre);
+
+            this.totalCesantiasMesPrimerSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasPrimerSemestre) / 360);
+
+            this.totalCesantiasMesSegundoSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasSegundoSemestre) / 360);
+
+            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestre, this.diasPrimerSemestre)
+            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE:', this.totalCesantiasMesSegundoSemestre, this.diasSegundoSemestre)
+
+            console.log('--------------------------------------------------')
+
+
+        }
+
 
         this.totalCesantias = Math.round((
             this.salarioMensual
