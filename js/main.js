@@ -303,10 +303,16 @@ class App {
         const salarioDiario = salarioMensual / 30;
 
 
+        // CESANTÍAS PONDERADO
+
+        let sistemaLiquidacion;
+
         if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
-            console.log('LIQUIDACIÓN SENCILLA SOLO PRIMER SEMESTRE')
+            this.sistemaLiquidacion = 'Primer Semestre';
+
+            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion)
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
-            console.log('DIAS DEL PRIMER SEMESTER:', this.diasPrimerSemestre);
+            console.log('DÍAS LIQUIDADOS:', this.diasPrimerSemestre);
             this.totalCesantiasMesPrimerSemestre =
                 Math.round((
                     this.salarioMensual
@@ -314,12 +320,17 @@ class App {
                     + this.otrosPagos)
                     * parseInt(this.diasPrimerSemestre) / 360);
 
-            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestre)
+
+            this.totalCesantiasMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesPrimerSemestre);
+            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestreFormat);
+
             console.log('--------------------------------------------------')
 
 
         } else if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
-            console.log('LIQUIDACIÓN SENCILLA SOLO SEGUNDO SEMESTRE')
+            this.sistemaLiquidacion = 'Segundo Semestre';
+
+            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion)
 
             this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
 
@@ -330,16 +341,23 @@ class App {
                     + this.otrosPagos)
                     * parseInt(this.diasSegundoSemestre) / 360);
 
-            console.log('DIAS DEL SEGUNDO SEMESTER:', this.diasSegundoSemestre, 'LIQUIDACIÓN:', this.totalCesantiasMesSegundoSemestre);
+
+            this.totalCesantiasMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesSegundoSemestre);
+
+            console.log('DIAS LIQUIDADOS:', this.diasSegundoSemestre);
+            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE', this.totalCesantiasMesSegundoSemestreFormat);
+
             console.log('--------------------------------------------------')
 
         } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
-            console.log('LIQUIDACIÓN COMPLICADA, DOS SEMESTRES');
+
+            this.sistemaLiquidacion = 'Sistema Múltiple';
+
+            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion);
 
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
             this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
-            console.log('DIAS DEL PRIMER SEMESTER:', this.diasPrimerSemestre);
-            console.log('DIAS DEL SEGUNDO SEMESTER:', this.diasSegundoSemestre);
+
 
             this.totalCesantiasMesPrimerSemestre =
                 Math.round((
@@ -355,14 +373,23 @@ class App {
                     + this.otrosPagos)
                     * parseInt(this.diasSegundoSemestre) / 360);
 
-            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestre, this.diasPrimerSemestre)
-            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE:', this.totalCesantiasMesSegundoSemestre, this.diasSegundoSemestre)
+            this.totalCesantiasMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesPrimerSemestre);
+
+            this.totalCesantiasMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesSegundoSemestre);
+
+            console.log('TOTAL DÍAS PRIMER SEMESTRE:', this.diasPrimerSemestre)
+            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestreFormat)
+            console.log('TOTAL DÍAS SEGUNDO SEMESTRE:', this.diasSegundoSemestre)
+            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE:', this.totalCesantiasMesSegundoSemestreFormat)
+
+
 
             console.log('--------------------------------------------------')
 
 
         }
 
+        console.log(this.sistemaLiquidacion);
 
         this.totalCesantias = Math.round((
             this.salarioMensual
@@ -375,6 +402,7 @@ class App {
         this.totalInteresesCesantias = Math.round(((this.salarioMensual + this.auxilioTransporte) * this.diasLaborados / 360) * 0.12);
 
         this.totalInteresesCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantias);
+
 
         this.diasLaboradosSemestreUno;
 
@@ -513,9 +541,11 @@ class App {
     }
 
     addArray = () => {
-        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.totalLiquidacionMesFormatJunio, this.totalLiquidacionMesFormatDiciembre)
+        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.sistemaLiquidacion)
 
         this.array.push(addItem);
+
+        console.log(this.array);
 
         this.sincLocalS();
 
