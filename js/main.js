@@ -32,6 +32,8 @@ class App {
 
 
 
+
+
     constructor() {
         this.selector();
         this.validacionPrima();
@@ -82,14 +84,14 @@ class App {
         this.inputFechaFin.addEventListener('change', () => {
 
             const inicial = new Date(this.inputFechaInicio.value);
-            const inicialMes = inicial.getMonth() + 1;
+            const inicialMes = inicial.getUTCMonth() + 1;
 
             const final = new Date(this.inputFechaFin.value);
-            const finalMes = final.getMonth() + 1;
+            const finalMes = final.getUTCMonth() + 1;
 
-            const inicialYear = inicial.getFullYear();
+            const inicialYear = inicial.getUTCFullYear();
 
-            const finalYear = final.getFullYear();
+            const finalYear = final.getUTCFullYear();
 
             let itemPrima = false;
             let showPrima;
@@ -129,9 +131,9 @@ class App {
             const final = new Date(this.inputFechaFin.value);
             const finalMes = final.getMonth() + 1;
 
-            const inicialYear = inicial.getFullYear();
+            const inicialYear = inicial.getUTCFullYear();
 
-            const finalYear = final.getFullYear();
+            const finalYear = final.getUTCFullYear();
 
             if (inicialYear != finalYear) {
                 this.contenidoModal.innerHTML = "";
@@ -262,8 +264,6 @@ class App {
 
         this.fechaContable = this.day360(this.fechaInicio, this.fechaFin);
 
-        //this.day360(this.fechaInicio, this.fechaFin)
-
         this.tipoTrabajo = this.inputTipoTrabajo.value;
 
         this.primaSi = this.inputPrimaSi.checked;
@@ -303,17 +303,16 @@ class App {
         const salarioDiario = salarioMensual / 30;
 
 
-        // CESANTÍAS PONDERADO
+        // PRIMAS PONDERADO
 
         let sistemaLiquidacion;
 
         if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
             this.sistemaLiquidacion = 'Primer Semestre';
 
-            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion)
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
-            console.log('DÍAS LIQUIDADOS:', this.diasPrimerSemestre);
-            this.totalCesantiasMesPrimerSemestre =
+
+            this.totalPrimaMesPrimerSemestre =
                 Math.round((
                     this.salarioMensual
                     + this.auxilioTransporte
@@ -321,20 +320,15 @@ class App {
                     * parseInt(this.diasPrimerSemestre) / 360);
 
 
-            this.totalCesantiasMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesPrimerSemestre);
-            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestreFormat);
-
-            console.log('--------------------------------------------------')
+            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
 
 
         } else if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
             this.sistemaLiquidacion = 'Segundo Semestre';
 
-            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion)
+            this.diasSegundoSemestre = this.day360(this.fechaInicio, this.fechaFin)
 
-            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
-
-            this.totalCesantiasMesSegundoSemestre =
+            this.totalPrimaMesSegundoSemestre =
                 Math.round((
                     this.salarioMensual
                     + this.auxilioTransporte
@@ -342,54 +336,36 @@ class App {
                     * parseInt(this.diasSegundoSemestre) / 360);
 
 
-            this.totalCesantiasMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesSegundoSemestre);
+            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
 
-            console.log('DIAS LIQUIDADOS:', this.diasSegundoSemestre);
-            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE', this.totalCesantiasMesSegundoSemestreFormat);
-
-            console.log('--------------------------------------------------')
 
         } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
 
             this.sistemaLiquidacion = 'Sistema Múltiple';
 
-            console.log('LIQUIDACIÓN:', this.sistemaLiquidacion);
-
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
             this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
 
 
-            this.totalCesantiasMesPrimerSemestre =
+            this.totalPrimaMesPrimerSemestre =
                 Math.round((
                     this.salarioMensual
                     + this.auxilioTransporte
                     + this.otrosPagos)
                     * parseInt(this.diasPrimerSemestre) / 360);
 
-            this.totalCesantiasMesSegundoSemestre =
+            this.totalPrimaMesSegundoSemestre =
                 Math.round((
                     this.salarioMensual
                     + this.auxilioTransporte
                     + this.otrosPagos)
                     * parseInt(this.diasSegundoSemestre) / 360);
 
-            this.totalCesantiasMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesPrimerSemestre);
+            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
 
-            this.totalCesantiasMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasMesSegundoSemestre);
-
-            console.log('TOTAL DÍAS PRIMER SEMESTRE:', this.diasPrimerSemestre)
-            console.log('TOTAL CESANTÍAS PRIMER SEMESTRE:', this.totalCesantiasMesPrimerSemestreFormat)
-            console.log('TOTAL DÍAS SEGUNDO SEMESTRE:', this.diasSegundoSemestre)
-            console.log('TOTAL CESANTÍAS SEGUNDO SEMESTRE:', this.totalCesantiasMesSegundoSemestreFormat)
-
-
-
-            console.log('--------------------------------------------------')
-
+            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
 
         }
-
-        console.log(this.sistemaLiquidacion);
 
         this.totalCesantias = Math.round((
             this.salarioMensual
@@ -541,11 +517,9 @@ class App {
     }
 
     addArray = () => {
-        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.sistemaLiquidacion)
+        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.sistemaLiquidacion, this.totalPrimaMesPrimerSemestreFormat, this.totalPrimaMesSegundoSemestreFormat, this.totalPrimaMesSegundoSemestreFormat)
 
         this.array.push(addItem);
-
-        console.log(this.array);
 
         this.sincLocalS();
 
@@ -623,6 +597,14 @@ class App {
                                 </div>
                             </div>
                         </section>
+                            `
+
+                if (item.sistemaLiquidacion === "Primer Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
@@ -639,16 +621,12 @@ class App {
                                 <h4>${item.totalVacacionesFormat}</h4>
                             </div>
 
-                            <div class="resultados">
-                                <h4>Prima Junio:</h4>
-                                <h4>${item.totalPrimaJunioFormat}</h4>
-                            </div>
-                            <div class="resultados">
-                                <h4>Prima Diciembre:</h4>
-                                <h4>${item.totalPrimaDiciembreFormat}</h4>
-                            </div>
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                        <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
                             
-                  
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
+
                             <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
                                         
                             </section>
@@ -656,7 +634,100 @@ class App {
                             <p class="texto-aclaracion">
                             *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
                             informativos. </p>
-                            `
+                        `
+
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Segundo Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                        <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Sistema Múltiple") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    if (this.inputPrimaSi.checked) {
+                        item.totalPrimaMesPrimerSemestre = 0;
+
+                        item.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalPrimaMesPrimerSemestre);
+
+                    }
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+
+
+                    modal.append(infoPrimaMesPrimerSemestre);
+                }
+
 
                 const botonEliminar = document.createElement('div');
 
@@ -723,36 +794,127 @@ class App {
                                 </div>
                             </div>
                         </section>
+                        `
+
+                if (item.sistemaLiquidacion === "Primer Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasDiaFormat}</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasDiaFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
                             </div>
-                            <div class="resultados">
-                                <h4>Prima Junio:</h4>
-                                <h4>${item.totalPrimaDiaFormat}</h4>
-                            </div>
-                            <div class="resultados">
-                                <h4>Prima Diciembre:</h4>
-                                <h4>${item.totalPrimaDiaFormat}</h4>
-                            </div>
+
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesDiaFormat}</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
                             </div>
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat} *</h2>
 
-                        </section>
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                        <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
 
-                        <p class="texto-aclaracion">
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
                             *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
                             informativos. </p>
                         `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Segundo Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                        <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Sistema Múltiple") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
 
                 const botonEliminar = document.createElement('div');
 
@@ -819,38 +981,132 @@ class App {
                                 </div>
                             </div>
                         </section>
+                        `
 
+                if (item.sistemaLiquidacion === "Primer Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasHoraFormat}</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
                             </div>
-                            <div class="resultados">
-                                <h4>Prima Junio:</h4>
-                                <h4>${item.totalPrimaHoraFormat}</h4>
-                            </div>
-                            <div class="resultados">
-                                <h4>Prima Diciembre:</h4>
-                                <h4>${item.totalPrimaHoraFormat}</h4>
-                            </div>
+
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesHoraFormat}</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
                             </div>
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat} *</h2>
-                            
-                        </section>
 
-                        <p class="texto-aclaracion">
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                        <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
                             *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
                             informativos. </p>
-
                         `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Segundo Semestre") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                        <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre"></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+                if (item.sistemaLiquidacion === "Sistema Múltiple") {
+
+                    const infoPrimaMesPrimerSemestre = document.createElement('div');
+
+                    infoPrimaMesPrimerSemestre.innerHTML =
+                        `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+                    modal.append(infoPrimaMesPrimerSemestre)
+                }
+
+
+
+
+
+
                 const botonEliminar = document.createElement('div');
 
                 botonEliminar.innerHTML = `
