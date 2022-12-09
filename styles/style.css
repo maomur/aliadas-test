@@ -10,6 +10,10 @@
     background-color: #4E0077;
 }
 
+.containerForm {
+    padding: 2em 3em 1em 3em;
+}
+
 .containerHeader {
     height: 170px;
     display: flex;
@@ -182,4 +186,8 @@ h4 {
 
 .secondaryColor {
     background-color: #EA7A15;
+}
+
+.modal-dialog {
+    overflow-y: initial !important
 }

@@ -294,79 +294,6 @@ class App {
 
         this.diasLaborados = this.fechaContable;
 
-        const baseSalarial = salarioMensual + auxilioTransporte + otrosPagos;
-
-        const diasVacaciones = this.diasLaborados / 720 * 15;
-
-        const sumatoria = parseInt(this.inputOtrosPagos.value) + 1000;
-
-        const salarioDiario = salarioMensual / 30;
-
-
-        // PRIMAS PONDERADO
-
-        let sistemaLiquidacion;
-
-        if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
-            this.sistemaLiquidacion = 'Primer Semestre';
-
-            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
-
-            this.totalPrimaMesPrimerSemestre =
-                Math.round((
-                    this.salarioMensual
-                    + this.auxilioTransporte
-                    + this.otrosPagos)
-                    * parseInt(this.diasPrimerSemestre) / 360);
-
-
-            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
-
-
-        } else if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
-            this.sistemaLiquidacion = 'Segundo Semestre';
-
-            this.diasSegundoSemestre = this.day360(this.fechaInicio, this.fechaFin)
-
-            this.totalPrimaMesSegundoSemestre =
-                Math.round((
-                    this.salarioMensual
-                    + this.auxilioTransporte
-                    + this.otrosPagos)
-                    * parseInt(this.diasSegundoSemestre) / 360);
-
-
-            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
-
-
-        } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
-
-            this.sistemaLiquidacion = 'Sistema Múltiple';
-
-            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
-            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
-
-
-            this.totalPrimaMesPrimerSemestre =
-                Math.round((
-                    this.salarioMensual
-                    + this.auxilioTransporte
-                    + this.otrosPagos)
-                    * parseInt(this.diasPrimerSemestre) / 360);
-
-            this.totalPrimaMesSegundoSemestre =
-                Math.round((
-                    this.salarioMensual
-                    + this.auxilioTransporte
-                    + this.otrosPagos)
-                    * parseInt(this.diasSegundoSemestre) / 360);
-
-            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
-
-            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
-
-        }
-
         this.totalCesantias = Math.round((
             this.salarioMensual
             + this.auxilioTransporte
@@ -380,9 +307,9 @@ class App {
         this.totalInteresesCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantias);
 
 
-        this.diasLaboradosSemestreUno;
+        // this.diasLaboradosSemestreUno;
 
-        this.diasLaboradosSemestreDos;
+        // this.diasLaboradosSemestreDos;
 
         this.totalPrimaJunio = Math.round(((
             this.salarioMensual
@@ -425,8 +352,11 @@ class App {
         this.semanasMes = 4.33;
         this.diasLaboradosMensualizados = parseInt(this.diasSemanaTrabajo) * this.semanasMes;
 
+        console.log(this.diasLaboradosMensualizados)
 
         this.salarioPromedioMensualDia = this.diasLaboradosMensualizados * this.salarioPactadoDia;
+
+        console.log(this.salarioPromedioMensualDia);
 
         this.mesesTrabajados = this.diasLaborados / 30;
         this.valorLiquidacionPrestacionesDia = (this.salarioPromedioMensualDia / 30) * 21;
@@ -438,6 +368,7 @@ class App {
         this.auxilioTransporteActualMensualFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.auxilioTransporteActualMensual);
 
         this.salarioBaseLiquidacionDia = this.salarioPromedioMensualDia + this.auxilioTransporteActualMensual + this.otrosPagos;
+
 
         this.diasTrabajadosAnuales = this.diasLaboradosMensualizados * this.mesesTrabajados;
 
@@ -455,15 +386,21 @@ class App {
         this.totalCesantiasDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasDia);
 
         this.totalInteresesCesantiasDia = Math.round(((this.salarioPromedioMensualDia) * this.diasLaborados / 360) * 0.12);
+
+
         this.totalPrimaDia = Math.round(((this.salarioPromedioMensualDia * this.diasLaborados) / 360) / 2);
+
         this.totalPrimaDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDia);
+
         this.totalInteresesCesantiasDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantiasDia);
+
         this.totalVacacionesDia = Math.round((this.diasLaborados * this.salarioPromedioMensualDia) / 720);
+
         this.totalVacacionesDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalVacacionesDia);
 
-        this.totalLiquidacionDia = this.totalCesantiasDia + this.totalInteresesCesantiasDia + this.totalVacacionesDia + (this.totalPrimaDia * 2);
+        // this.totalLiquidacionDia = this.totalCesantiasDia + this.totalInteresesCesantiasDia + this.totalVacacionesDia + (this.totalPrimaDia * 2);
 
-        this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
+        // this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
 
 
 
@@ -513,11 +450,197 @@ class App {
 
         this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
 
+
+
+        // PRIMAS PONDERADO
+
+        let sistemaLiquidacion;
+
+        if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
+            this.sistemaLiquidacion = 'Primer Semestre';
+
+            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
+
+            this.totalPrimaMesPrimerSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasPrimerSemestre) / 360);
+
+
+            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
+
+            this.totalPrimaDiaPrimerSemestre =
+                Math.round((this.salarioPromedioMensualDia * this.diasPrimerSemestre) / 360)
+
+            this.totalPrimaDiaPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiaPrimerSemestre);
+
+            this.totalLiquidacionDia =
+                this.totalCesantiasDia
+                + this.totalInteresesCesantiasDia
+                + this.totalVacacionesDia
+                + this.totalPrimaDiaPrimerSemestre
+
+            this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
+
+            this.totalPrimaHoraPrimerSemestre =
+                Math.round((
+                    this.promedioSalarioHoraMensual
+                    * this.diasPrimerSemestre)
+                    / 360);
+
+            this.totalPrimaHoraPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaHoraPrimerSemestre);
+
+            this.totalLiquidacionHora =
+                this.totalCesantiasHora
+                + this.totalInteresesCesantiasHora
+                + this.totalVacacionesHora
+                + this.totalPrimaHoraPrimerSemestre;
+
+            this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
+
+
+
+        } if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
+            this.sistemaLiquidacion = 'Segundo Semestre';
+
+            this.diasSegundoSemestre = this.day360(this.fechaInicio, this.fechaFin)
+
+            this.totalPrimaMesSegundoSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasSegundoSemestre) / 360);
+
+
+            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
+
+            this.totalPrimaDiaSegundoSemestre =
+                Math.round((this.salarioPromedioMensualDia * this.diasSegundoSemestre) / 360)
+
+
+            this.totalPrimaDiaSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiaSegundoSemestre);
+
+            console.log(this.totalPrimaDiaSegundoSemestreFormat)
+
+            this.totalLiquidacionDia =
+                this.totalCesantiasDia
+                + this.totalInteresesCesantiasDia
+                + this.totalVacacionesDia
+                + this.totalPrimaDiaSegundoSemestre
+
+            this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
+
+            this.totalPrimaHoraSegundoSemestre =
+                Math.round((
+                    this.promedioSalarioHoraMensual
+                    * this.diasSegundoSemestre)
+                    / 360);
+
+            this.totalPrimaHoraSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaHoraSegundoSemestre);
+
+            this.totalLiquidacionHora =
+                this.totalCesantiasHora
+                + this.totalInteresesCesantiasHora
+                + this.totalVacacionesHora
+                + this.totalPrimaHoraSegundoSemestre;
+
+            this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
+
+
+        } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
+
+
+            this.sistemaLiquidacion = 'Sistema Múltiple';
+
+            this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
+            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
+
+
+            this.totalPrimaMesPrimerSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasPrimerSemestre) / 360);
+
+            this.totalPrimaMesSegundoSemestre =
+                Math.round((
+                    this.salarioMensual
+                    + this.auxilioTransporte
+                    + this.otrosPagos)
+                    * parseInt(this.diasSegundoSemestre) / 360);
+
+
+            this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
+
+            this.totalPrimaMesSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesSegundoSemestre);
+
+
+            this.totalPrimaDiaPrimerSemestre =
+                Math.round((this.salarioPromedioMensualDia * this.diasPrimerSemestre) / 360)
+
+
+            this.totalPrimaDiaPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiaPrimerSemestre);
+
+            this.totalPrimaDiaSegundoSemestre =
+                Math.round((this.salarioPromedioMensualDia * this.diasSegundoSemestre) / 360)
+
+
+            this.totalPrimaDiaSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiaSegundoSemestre);
+
+            this.totalLiquidacionDia =
+                this.totalCesantiasDia
+                + this.totalInteresesCesantiasDia
+                + this.totalVacacionesDia
+                + this.totalPrimaDiaPrimerSemestre
+                + this.totalPrimaDiaSegundoSemestre
+
+            this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
+
+
+
+            this.totalPrimaHoraPrimerSemestre =
+                Math.round((
+                    this.promedioSalarioHoraMensual
+                    * this.diasPrimerSemestre)
+                    / 360);
+
+            this.totalPrimaHoraPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaHoraPrimerSemestre);
+
+
+            this.totalPrimaHoraSegundoSemestre =
+                Math.round((
+                    this.promedioSalarioHoraMensual
+                    * this.diasSegundoSemestre)
+                    / 360);
+
+            this.totalPrimaHoraSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaHoraSegundoSemestre);
+
+            this.totalLiquidacionHora =
+                this.totalCesantiasHora
+                + this.totalInteresesCesantiasHora
+                + this.totalVacacionesHora
+                + this.totalPrimaHoraPrimerSemestre
+                + this.totalPrimaHoraSegundoSemestre;
+
+            this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
+
+
+
+        }
+
+
+
         this.addArray();
     }
 
     addArray = () => {
-        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.sistemaLiquidacion, this.totalPrimaMesPrimerSemestreFormat, this.totalPrimaMesSegundoSemestreFormat, this.totalPrimaMesSegundoSemestreFormat)
+        const addItem = new Items(this.fechaInicio, this.fechaFin, this.tipoTrabajo, this.otrosPagos, this.otrosPagosFormat, this.salarioMensual, this.salarioMensualFormat, this.id, this.diasLaborados, this.primaSi, this.auxilioTransporte, this.auxilioTransporteFormat, this.deducciones, this.deduccionesFormat, this.salarioRecibidoMensual, this.salarioRecibidoMensualFormat, this.totalCesantias, this.totalCesantiasFormat, this.totalInteresesCesantias, this.totalInteresesCesantiasFormat, this.totalPrima, this.totalPrimaFormat, this.totalVacaciones, this.totalVacacionesFormat, this.totalLiquidacionMes, this.totalLiquidacionMesFormat, this.salarioPactadoDia, this.salarioPactadoDiaFormat, this.diasSemanaTrabajo, this.semanasMes, this.diasLaboradosMensualizados, this.salarioPromedioMensualDia, this.mesesTrabajados, this.valorLiquidacionPrestacionesDia, this.auxilioTransporteActualDiario, this.auxilioTransporteActualMensualFormat, this.auxilioTransporteActualMensual, this.salarioBaseLiquidacionDia, this.diasTrabajadosAnuales, this.deduccionesDia, this.deduccionesDiaFormat, this.salarioMensualRecibidoDia, this.salarioMensualRecibidoDiaFormat, this.totalCesantiasDia, this.totalCesantiasDiaFormat, this.totalInteresesCesantiasDia, this.totalInteresesCesantiasDiaFormat, this.totalPrimaDia, this.totalPrimaDiaFormat, this.totalVacacionesDia, this.totalVacacionesDiaFormat, this.totalLiquidacionDia, this.totalLiquidacionDiaFormat, this.promedioSalarioHoraMensual, this.promedioSalarioHoraMensualFormat, this.promedioTransporteMensualHora, this.promedioTransporteMensualHoraFormat, this.salarioPactadoHoraFormat, this.deduccionesHora, this.deduccionesHoraFormat, this.totalCesantiasHora, this.totalCesantiasHoraFormat, this.totalInteresesCesantiasHora, this.totalInteresesCesantiasHoraFormat, this.totalPrimaHora, this.totalPrimaHoraFormat, this.totalVacacionesHora, this.totalVacacionesHoraFormat, this.totalLiquidacionHora, this.totalLiquidacionHoraFormat, this.totalPrimaJunioFormat, this.totalPrimaDiciembreFormat, this.sistemaLiquidacion, this.totalPrimaMesPrimerSemestreFormat,
+            this.totalPrimaMesSegundoSemestreFormat,
+            this.totalPrimaMesPrimerSemestre, this.totalPrimaMesSegundoSemestre, this.totalPrimaDiaPrimerSemestreFormat, this.totalPrimaDiaSegundoSemestreFormat, this.totalPrimaDiaSegundoSemestre, this.totalPrimaHoraPrimerSemestreFormat, this.totalPrimaHoraPrimerSemestre, this.totalPrimaHoraSegundoSemestre, this.totalPrimaHoraSegundoSemestreFormat)
 
         this.array.push(addItem);
 
@@ -541,16 +664,15 @@ class App {
 
         this.array.forEach((item) => {
 
+
             if (item.tipoTrabajo === 'tiempo-completo') {
-
                 this.contenidoModal.dataset.id = item.id;
-
                 const modal = document.createElement('div');
 
                 modal.innerHTML = `
                         <section class="head-data">
                             <div>
-                                <p class="head-data-title">Tus Resultados:</p>
+                                <p class="head-data-title">Liquidación:</p>
                                 <p class="head-data-subtitle">Ingreso Mensual</p>
                             </div>
                         </section>
@@ -639,7 +761,7 @@ class App {
                     modal.append(infoPrimaMesPrimerSemestre)
                 }
 
-                if (item.sistemaLiquidacion === "Segundo Semestre") {
+                else if (item.sistemaLiquidacion === "Segundo Semestre") {
 
                     const infoPrimaMesPrimerSemestre = document.createElement('div');
 
@@ -678,19 +800,27 @@ class App {
                     modal.append(infoPrimaMesPrimerSemestre)
                 }
 
-                if (item.sistemaLiquidacion === "Sistema Múltiple") {
+                else if (item.sistemaLiquidacion === "Sistema Múltiple") {
 
                     const infoPrimaMesPrimerSemestre = document.createElement('div');
 
-                    if (this.inputPrimaSi.checked) {
+                    if (this.inputPrimaSi.checked === true) {
+
                         item.totalPrimaMesPrimerSemestre = 0;
 
                         item.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalPrimaMesPrimerSemestre);
 
-                    }
+                        item.totalLiquidacionMes =
+                            item.totalCesantias
+                            + item.totalInteresesCesantias
+                            + item.totalPrimaMesSegundoSemestre
+                            + item.totalVacaciones
+                            + item.totalPrimaMesPrimerSemestre;
 
-                    infoPrimaMesPrimerSemestre.innerHTML =
-                        `
+                        item.totalLiquidacionMesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalLiquidacionMes);
+
+                        infoPrimaMesPrimerSemestre.innerHTML =
+                            `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
@@ -725,9 +855,61 @@ class App {
                         `
 
 
-                    modal.append(infoPrimaMesPrimerSemestre);
+                        modal.append(infoPrimaMesPrimerSemestre);
+
+
+                    } else {
+                        item.totalLiquidacionMes =
+                            item.totalCesantias
+                            + item.totalInteresesCesantias
+                            + item.totalPrimaMesPrimerSemestre
+                            + item.totalPrimaMesSegundoSemestre
+                            + item.totalVacaciones;
+
+                        item.totalLiquidacionMesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalLiquidacionMes);
+
+                        infoPrimaMesPrimerSemestre.innerHTML =
+                            `
+                        <section class="form-container">
+                            <h2 class="titulo-bloque">Tu Liquidación</h2>
+                            <div class="resultados">
+                                <h4>Cesantías:</h4>
+                                <h4>${item.totalCesantiasFormat}</h4>
+                            </div>
+                            <div class="resultados">
+                                <h4>Intereses Cesantías:</h4>
+                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                            </div>
+
+                            <div class="resultados">
+                                <h4>Vacaciones:</h4>
+                                <h4>${item.totalVacacionesFormat}</h4>
+                            </div>
+
+                            <div class="resultados" id="divPrimaPrimerSemestre">
+                            <h4>Prima Primer Semestre:</h4>
+                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            
+                            <div class="resultados" id="divPrimaSegundoSemestre">
+                            <h4>Prima Segundo Semestre:</h4>
+                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                                        
+                            </section>
+                            
+                            <p class="texto-aclaracion">
+                            *Los cálculos generados por esta calculadora, no compromenten a la Escuela Nacional Sindical; pues son meramente
+                            informativos. </p>
+                        `
+
+
+                        modal.append(infoPrimaMesPrimerSemestre);
+
+                    }
                 }
 
+                this.sincLocalS();
 
                 const botonEliminar = document.createElement('div');
 
@@ -789,7 +971,7 @@ class App {
                                     <h4>${item.otrosPagosFormat}</h4>
                                 </div>
                                 <div>
-                                    <h3>Salario Promedio Mensual </h3>
+                                    <h3>Salario Promedio Mes </h3>
                                     <h4>${item.salarioMensualRecibidoDiaFormat}</h4>
                                 </div>
                             </div>
@@ -806,25 +988,25 @@ class App {
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasDiaFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasDiaFormat}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesDiaFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Primer Semestre:</h4>
-                        <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                        <h4>${item.totalPrimaDiaPrimerSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre"></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat}  *</h2>
                                         
                             </section>
                             
@@ -845,25 +1027,25 @@ class App {
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasDiaFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasDia}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesDiaFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Segundo Semestre:</h4>
-                        <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                        <h4>${item.totalPrimaDiaSegundoSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre"></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat}  *</h2>
                                         
                             </section>
                             
@@ -878,33 +1060,51 @@ class App {
 
                     const infoPrimaMesPrimerSemestre = document.createElement('div');
 
+                    if (this.inputPrimaSi.checked) {
+                        item.totalPrimaDiaPrimerSemestre = 0;
+
+                        item.totalPrimaDiaPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalPrimaDiaPrimerSemestre);
+
+                        item.totalLiquidacionDia =
+                            item.totalCesantiasDia
+                            + item.totalInteresesCesantiasDia
+                            + item.totalPrimaDiaSegundoSemestre
+                            + item.totalVacacionesDia;
+
+
+                        item.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalLiquidacionDia);
+
+                        console.log(item.totalLiquidacionDia)
+                    }
+
+
                     infoPrimaMesPrimerSemestre.innerHTML =
                         `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasDiaFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasDiaFormat}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesDiaFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Primer Semestre:</h4>
-                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            <h4>${item.totalPrimaDiaPrimerSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre">
                             <h4>Prima Segundo Semestre:</h4>
-                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                            <h4>${item.totalPrimaDiaSegundoSemestreFormat}</h4></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionDiaFormat}  *</h2>
                                         
                             </section>
                             
@@ -993,25 +1193,25 @@ class App {
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasHoraFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesHoraFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Primer Semestre:</h4>
-                        <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                        <h4>${item.totalPrimaHoraPrimerSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre"></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat}  *</h2>
                                         
                             </section>
                             
@@ -1032,25 +1232,25 @@ class App {
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasHoraFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesHoraFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Segundo Semestre:</h4>
-                        <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                        <h4>${item.totalPrimaHoraSegundoSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre"></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat}  *</h2>
                                         
                             </section>
                             
@@ -1065,33 +1265,52 @@ class App {
 
                     const infoPrimaMesPrimerSemestre = document.createElement('div');
 
+
+                    if (this.inputPrimaSi.checked) {
+                        item.totalPrimaHoraPrimerSemestre = 0;
+
+                        item.totalPrimaHoraPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalPrimaHoraPrimerSemestre);
+
+                        item.totalLiquidacionHora =
+                            item.totalCesantiasHora
+                            + item.totalInteresesCesantiasHora
+                            + item.totalPrimaHoraSegundoSemestre
+                            + item.totalVacacionesHora;
+
+
+                        item.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(item.totalLiquidacionHora);
+
+                    }
+
+
+
                     infoPrimaMesPrimerSemestre.innerHTML =
                         `
                         <section class="form-container">
                             <h2 class="titulo-bloque">Tu Liquidación</h2>
                             <div class="resultados">
                                 <h4>Cesantías:</h4>
-                                <h4>${item.totalCesantiasFormat}</h4>
+                                <h4>${item.totalCesantiasHoraFormat}</h4>
                             </div>
                             <div class="resultados">
                                 <h4>Intereses Cesantías:</h4>
-                                <h4>${item.totalInteresesCesantiasFormat}</h4>
+                                <h4>${item.totalInteresesCesantiasHoraFormat}</h4>
                             </div>
 
                             <div class="resultados">
                                 <h4>Vacaciones:</h4>
-                                <h4>${item.totalVacacionesFormat}</h4>
+                                <h4>${item.totalVacacionesHoraFormat}</h4>
                             </div>
 
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Primer Semestre:</h4>
-                            <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
+                            <h4>${item.totalPrimaHoraPrimerSemestreFormat}</h4></div>
                             
                             <div class="resultados" id="divPrimaSegundoSemestre">
                             <h4>Prima Segundo Semestre:</h4>
-                            <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
+                            <h4>${item.totalPrimaHoraSegundoSemestreFormat}</h4></div>
 
-                            <h2 class="titulo-total">Total: ${item.totalLiquidacionMesFormat}  *</h2>
+                            <h2 class="titulo-total">Total: ${item.totalLiquidacionHoraFormat}  *</h2>
                                         
                             </section>
                             
@@ -1101,11 +1320,6 @@ class App {
                         `
                     modal.append(infoPrimaMesPrimerSemestre)
                 }
-
-
-
-
-
 
                 const botonEliminar = document.createElement('div');
 
@@ -1164,6 +1378,8 @@ class App {
         //this.fechaContable = (parseFloat(dy * 360 + dm * 30 + dd));
         return (parseFloat(dy * 360 + dm * 30 + dd))
     }
+
+
 
 }
 
