@@ -1,6 +1,5 @@
 import { Items } from '../classes/Item.js'
 
-
 class App {
 
     array = [];
@@ -31,30 +30,25 @@ class App {
     fechaButton = document.querySelector('#fechaButton');
 
 
-
-
-
     constructor() {
         this.selector();
         this.validacionPrima();
         this.validacion();
         this.localIni();
         this.misLiquidaciones();
-        let restaFechas;
-
     }
 
 
-    localIni() {
+    localIni() { //REFACTORIZADO
         document.addEventListener('DOMContentLoaded', () => {
             this.array = JSON.parse(localStorage.getItem('Liquidaciones')) || [];
         })
     }
 
-    selector() {
+    selector() { // REFACTORIZADO
 
         this.inputTipoTrabajo.addEventListener('change', () => {
-            if (this.inputTipoTrabajo.value === 'tiempo-completo') {
+            if (this.inputTipoTrabajo.value === 'tiempo-compvaro') {
                 divMensual.className = 'd-block'
                 divDias.className = 'd-none';
                 divHoras.className = 'd-none';
@@ -79,22 +73,48 @@ class App {
     }
 
 
-    validacionPrima() {
+    validacionPrima() { // REFACTORIZADO
 
         this.inputFechaFin.addEventListener('change', () => {
 
             const inicial = new Date(this.inputFechaInicio.value);
+
             const inicialMes = inicial.getUTCMonth() + 1;
 
+            let inicialDay = inicial.getUTCDate();
+
             const final = new Date(this.inputFechaFin.value);
+
+            let finalDay = final.getUTCDate();
+
             const finalMes = final.getUTCMonth() + 1;
 
             const inicialYear = inicial.getUTCFullYear();
 
             const finalYear = final.getUTCFullYear();
 
+            if (inicialDay == 31) inicialDay = 30;
+            if (finalDay == 31) finalDay = 30;
+
+            // console.log('INICIAL DAY', inicialDay)
+            // console.log('FINAL DAY', finalDay)
+
+            const days = (final.getUTCFullYear() - inicial.getUTCFullYear()) * 360
+                + (final.getUTCMonth() - inicial.getUTCMonth()) * 30
+                + ((final.getUTCDate() + 1) - inicial.getUTCDate());
+
+            // console.log(parseFloat(parseFloat(days.toString())))
+
+
+
+
+
+
+
+
+
+
             let itemPrima = false;
-            let showPrima;
 
             if (inicialMes <= 6 && finalMes > 6) {
                 itemPrima = true;
@@ -112,7 +132,7 @@ class App {
         })
     }
 
-    activarPrima(itemPrima) {
+    activarPrima(itemPrima) { // REFACTORIZADO
 
         if (itemPrima === true) {
             this.divPrima.className = 'd-block';
@@ -121,7 +141,7 @@ class App {
         }
     }
 
-    validacion() {
+    validacion() { // REFACTORIZADO 
 
         botonCalcular.addEventListener('click', () => {
 
@@ -132,7 +152,6 @@ class App {
             const finalMes = final.getMonth() + 1;
 
             const inicialYear = inicial.getUTCFullYear();
-
             const finalYear = final.getUTCFullYear();
 
             if (inicialYear != finalYear) {
@@ -230,16 +249,16 @@ class App {
                 this.inputOtrosPagos.value = 0;
                 this.imprimir();
             }
-            else { this.ejecutar() };
+            else this.ejecutar()
         }
         )
     }
 
-    sincLocalS() {
+    sincLocalS() { // REFACTORIZADO
         localStorage.setItem('Liquidaciones', JSON.stringify(this.array));
     }
 
-    misLiquidaciones() {
+    misLiquidaciones() { // REFACTORIZADO
         this.botonLiquidaciones.addEventListener('click', () => {
             this.localIni();
             this.imprimir(this.array);
@@ -250,7 +269,7 @@ class App {
 
         this.contenidoModal.innerHTML = "";
 
-        // VARIABLES TIEMPO COMPLETO MES
+        // ---------------VARIABLES TIEMPO COMPLETO MES -----------------//
 
         this.fechaInicio = this.inputFechaInicio.value;
 
@@ -306,11 +325,6 @@ class App {
 
         this.totalInteresesCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantias);
 
-
-        // this.diasLaboradosSemestreUno;
-
-        // this.diasLaboradosSemestreDos;
-
         this.totalPrimaJunio = Math.round(((
             this.salarioMensual
             + this.auxilioTransporte
@@ -343,7 +357,7 @@ class App {
 
 
 
-        //VARIABLES TRABAJO POR DÍA
+        // ---------------VARIABLES TRABAJO POR DÍAS -----------------//
 
         this.salarioPactadoDia = this.inputSalarioDia.value;
         this.salarioPactadoDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.salarioPactadoDia);
@@ -352,11 +366,7 @@ class App {
         this.semanasMes = 4.33;
         this.diasLaboradosMensualizados = parseInt(this.diasSemanaTrabajo) * this.semanasMes;
 
-        console.log(this.diasLaboradosMensualizados)
-
         this.salarioPromedioMensualDia = this.diasLaboradosMensualizados * this.salarioPactadoDia;
-
-        console.log(this.salarioPromedioMensualDia);
 
         this.mesesTrabajados = this.diasLaborados / 30;
         this.valorLiquidacionPrestacionesDia = (this.salarioPromedioMensualDia / 30) * 21;
@@ -364,11 +374,9 @@ class App {
 
         this.auxilioTransporteActualMensual = Math.round(this.diasLaboradosMensualizados * this.auxilioTransporteActualDiario);
 
-
         this.auxilioTransporteActualMensualFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.auxilioTransporteActualMensual);
 
         this.salarioBaseLiquidacionDia = this.salarioPromedioMensualDia + this.auxilioTransporteActualMensual + this.otrosPagos;
-
 
         this.diasTrabajadosAnuales = this.diasLaboradosMensualizados * this.mesesTrabajados;
 
@@ -378,7 +386,6 @@ class App {
 
         this.salarioMensualRecibidoDia = this.salarioPromedioMensualDia - this.deduccionesDia;
 
-
         this.salarioMensualRecibidoDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.salarioMensualRecibidoDia);
 
         this.totalCesantiasDia = Math.round((this.salarioPromedioMensualDia * this.diasLaborados) / 360);
@@ -386,7 +393,6 @@ class App {
         this.totalCesantiasDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalCesantiasDia);
 
         this.totalInteresesCesantiasDia = Math.round(((this.salarioPromedioMensualDia) * this.diasLaborados / 360) * 0.12);
-
 
         this.totalPrimaDia = Math.round(((this.salarioPromedioMensualDia * this.diasLaborados) / 360) / 2);
 
@@ -398,13 +404,9 @@ class App {
 
         this.totalVacacionesDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalVacacionesDia);
 
-        // this.totalLiquidacionDia = this.totalCesantiasDia + this.totalInteresesCesantiasDia + this.totalVacacionesDia + (this.totalPrimaDia * 2);
 
-        // this.totalLiquidacionDiaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionDia);
+        // ---------------VARIABLES TRABAJO POR HORAS -----------------//
 
-
-
-        // VARIABLES POR HORA
         this.salarioPactadoHora = this.inputSalarioHora.value;
         this.horasTrabajadasSemana = this.inputHorasTrabajoDia.value;
         this.diasHora = parseInt(this.horasTrabajadasSemana) / 8;
@@ -452,7 +454,8 @@ class App {
 
 
 
-        // PRIMAS PONDERADO
+        // --------------- PONDERACIÓN DE PRIMA -----------------//
+
 
         let sistemaLiquidacion;
 
@@ -522,8 +525,6 @@ class App {
 
 
             this.totalPrimaDiaSegundoSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiaSegundoSemestre);
-
-            console.log(this.totalPrimaDiaSegundoSemestreFormat)
 
             this.totalLiquidacionDia =
                 this.totalCesantiasDia
@@ -627,8 +628,6 @@ class App {
                 + this.totalPrimaHoraSegundoSemestre;
 
             this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
-
-
 
         }
 
@@ -1336,48 +1335,103 @@ class App {
     }
 
     day360(sd, fd, m) {
-        var d1 = new Date(sd);
-        var d2 = new Date(fd);
-        var d1_1 = d1;
-        var d2_1 = d2;
+        var fechaInicial = new Date(sd);
+        var fechaFinal = new Date(fd);
+
         var method = m || false;
-        var d1_y = d1.getFullYear();
-        var d2_y = d2.getFullYear();
-        var dy = 0;
-        var d1_m = d1.getMonth();
-        var d2_m = d2.getMonth();
-        var dm = 0;
-        var d1_d = d1.getDate();
-        var d2_d = d2.getDate();
-        var dd = 0;
+
+        // EXTRAER AÑOS
+        var anoInicial = fechaInicial.getUTCFullYear();
+        //console.log('AÑO INICIAL:', anoInicial)
+
+        var anoFinal = fechaFinal.getUTCFullYear();
+        //console.log('AÑO FINAL:', anoFinal)
+
+        var anos = 0;
+
+        //EXTRAER MESES
+        var mesInicial = fechaInicial.getUTCMonth();
+        //console.log('MES INICIAL:', mesInicial)
+
+        var mesFinal = fechaFinal.getUTCMonth();
+        //console.log('MES FINAL:', mesFinal)
+
+        var meses = 0;
+
+        //EXTRAER DÍAS
+        var diaInicial = fechaInicial.getUTCDate();
+        //console.log('DÍA INICIAL:', diaInicial)
+        var diaFinal = fechaFinal.getUTCDate();
+
+
+
+        var dias = 0;
+
+
+        if (mesInicial == 1) {
+            if (diaInicial == 1) {
+                if (mesFinal == 1) {
+                    console.log(diaFinal)
+                    if (diaFinal == 28) {
+                        diaFinal = fechaFinal.getUTCDate() + 3;
+                        console.log(diaFinal)
+
+                    }
+                }
+            }
+
+        } else {
+            console.log('ESTE ES EL ELSE')
+
+        }
+
+        // ---------------------------------------////
+
+        // CONDICIONALES
+
         if (method) {
             // euro
-            if (d1_d == 31) d1_d = 30;
-            if (d2_d == 31) d2_d = 30;
+            if (diaInicial == 31) diaInicial = 30;
+            if (diaFinal == 31) diaFinal = 30;
         } else {
             // american NASD
-            if (d1_d == 31) d1_d = 30;
-            if (d2_d == 31) {
-                if (d1_d < 30) {
-                    if (d2_m == 11) {
-                        d2_y = d2_y + 1;
-                        d2_m = 0;
-                        d2_d = 1;
+            if (diaInicial == 31) {
+                diaInicial = 30
+            }
+
+            //var diaFinal = fechaFinal.getUTCDate();
+
+            if (diaFinal == 31) {
+                console.log('ENTRA EN IF DIA FINAL')
+                if (diaInicial < 30) {
+                    if (mesFinal == 11) {
+                        anoFinal = anoFinal + 1;
+                        diaFinal = 0;
+                        diaFinal = 1;
                     } else {
-                        d2_m = d2_m + 1;
-                        d2_d = 1;
+                        mesFinal = mesFinal + 1;
+                        diaFinal = 1;
                     }
                 } else {
-                    d2_d = 30;
+                    diaFinal = 30;
                 }
             }
         }
-        dy = d2_y - d1_y;
-        dm = d2_m - d1_m;
-        dd = d2_d - d1_d;
+        anos = anoFinal - anoInicial;
+
+        meses = mesFinal - mesInicial;
+        dias = (diaFinal - diaInicial);
+
+
+
         //this.fechaContable = (parseFloat(dy * 360 + dm * 30 + dd));
-        return (parseFloat(dy * 360 + dm * 30 + dd))
+        // OJOOOOOOOOOOOOOOOO CON ESE +1 ////////////
+        return (parseFloat(anos * 360 + meses * 30 + dias))
     }
+
+
+
+
 
 
 
