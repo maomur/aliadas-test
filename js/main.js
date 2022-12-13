@@ -103,7 +103,7 @@ class App {
                 + (final.getUTCMonth() - inicial.getUTCMonth()) * 30
                 + ((final.getUTCDate() + 1) - inicial.getUTCDate());
 
-            // console.log(parseFloat(parseFloat(days.toString())))
+            //console.log(parseFloat(parseFloat(days.toString())))
 
 
 
@@ -1338,103 +1338,51 @@ class App {
         var fechaInicial = new Date(sd);
         var fechaFinal = new Date(fd);
 
-        var method = m || false;
-
         // EXTRAER AÑOS
         var anoInicial = fechaInicial.getUTCFullYear();
-        //console.log('AÑO INICIAL:', anoInicial)
-
         var anoFinal = fechaFinal.getUTCFullYear();
-        //console.log('AÑO FINAL:', anoFinal)
-
         var anos = 0;
 
         //EXTRAER MESES
         var mesInicial = fechaInicial.getUTCMonth();
-        //console.log('MES INICIAL:', mesInicial)
-
         var mesFinal = fechaFinal.getUTCMonth();
-        //console.log('MES FINAL:', mesFinal)
-
         var meses = 0;
 
         //EXTRAER DÍAS
         var diaInicial = fechaInicial.getUTCDate();
-        //console.log('DÍA INICIAL:', diaInicial)
         var diaFinal = fechaFinal.getUTCDate();
 
-
-
         var dias = 0;
-
 
         if (mesInicial == 1) {
             if (diaInicial == 1) {
                 if (mesFinal == 1) {
-                    console.log(diaFinal)
                     if (diaFinal == 28) {
-                        diaFinal = fechaFinal.getUTCDate() + 3;
-                        console.log(diaFinal)
-
+                        diaFinal = fechaFinal.getUTCDate() + 2;
                     }
                 }
             }
 
         } else {
-            console.log('ESTE ES EL ELSE')
-
-        }
-
-        // ---------------------------------------////
-
-        // CONDICIONALES
-
-        if (method) {
-            // euro
-            if (diaInicial == 31) diaInicial = 30;
-            if (diaFinal == 31) diaFinal = 30;
-        } else {
-            // american NASD
             if (diaInicial == 31) {
                 diaInicial = 30
             }
-
-            //var diaFinal = fechaFinal.getUTCDate();
-
             if (diaFinal == 31) {
-                console.log('ENTRA EN IF DIA FINAL')
+                diaFinal = 30;
+                console.log(diaFinal)
                 if (diaInicial < 30) {
-                    if (mesFinal == 11) {
-                        anoFinal = anoFinal + 1;
-                        diaFinal = 0;
-                        diaFinal = 1;
-                    } else {
-                        mesFinal = mesFinal + 1;
-                        diaFinal = 1;
-                    }
                 } else {
                     diaFinal = 30;
                 }
             }
         }
+
         anos = anoFinal - anoInicial;
-
         meses = mesFinal - mesInicial;
-        dias = (diaFinal - diaInicial);
+        dias = (diaFinal + 1) - (diaInicial);
 
-
-
-        //this.fechaContable = (parseFloat(dy * 360 + dm * 30 + dd));
-        // OJOOOOOOOOOOOOOOOO CON ESE +1 ////////////
         return (parseFloat(anos * 360 + meses * 30 + dias))
     }
-
-
-
-
-
-
-
 }
 
 
