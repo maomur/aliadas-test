@@ -48,7 +48,7 @@ class App {
     selector() { // REFACTORIZADO
 
         this.inputTipoTrabajo.addEventListener('change', () => {
-            if (this.inputTipoTrabajo.value === 'tiempo-compvaro') {
+            if (this.inputTipoTrabajo.value === 'tiempo-completo') {
                 divMensual.className = 'd-block'
                 divDias.className = 'd-none';
                 divHoras.className = 'd-none';
@@ -279,7 +279,9 @@ class App {
 
         this.fechaFinDate = new Date(this.fechaFin);
 
-        this.fechaMitad = new Date('2022-07-01');
+        this.fechaMitad = new Date('2022-06-30');
+
+        this.fechaUltima = new Date('2022-12-31')
 
         this.fechaContable = this.day360(this.fechaInicio, this.fechaFin);
 
@@ -325,6 +327,9 @@ class App {
 
         this.totalInteresesCesantiasFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalInteresesCesantias);
 
+
+        //TRAER DÍAS LABORADOS PONDERADOS
+
         this.totalPrimaJunio = Math.round(((
             this.salarioMensual
             + this.auxilioTransporte
@@ -332,17 +337,22 @@ class App {
             * this.diasLaborados / 360)
             / 2);
 
+
         this.totalPrimaDiciembre = Math.round(((
             this.salarioMensual
             + this.auxilioTransporte
             + parseInt(this.inputOtrosPagos.value))
             * this.diasLaborados / 360)
-            / 2);
+        );
+
+
 
         this.totalPrimaJunioFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaJunio);
 
+
         this.totalPrimaDiciembreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaDiciembre);
 
+        console.log(this.totalPrimaDiciembreFormat)
         this.totalVacaciones = Math.round((this.salarioMensual * this.diasLaborados) / 720);
 
         this.totalVacacionesFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalVacaciones);
@@ -459,10 +469,11 @@ class App {
 
         let sistemaLiquidacion;
 
-        if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate <= this.fechaMitad) {
+        if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate < this.fechaMitad) {
             this.sistemaLiquidacion = 'Primer Semestre';
 
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaFin);
+            console.log(this.diasPrimerSemestre)
 
             this.totalPrimaMesPrimerSemestre =
                 Math.round((
@@ -470,7 +481,6 @@ class App {
                     + this.auxilioTransporte
                     + this.otrosPagos)
                     * parseInt(this.diasPrimerSemestre) / 360);
-
 
             this.totalPrimaMesPrimerSemestreFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalPrimaMesPrimerSemestre);
 
@@ -505,7 +515,7 @@ class App {
 
 
 
-        } if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate >= this.fechaMitad) {
+        } if (this.fechaInicioDate >= this.fechaMitad && this.fechaInicioDate > this.fechaMitad) {
             this.sistemaLiquidacion = 'Segundo Semestre';
 
             this.diasSegundoSemestre = this.day360(this.fechaInicio, this.fechaFin)
@@ -551,14 +561,16 @@ class App {
             this.totalLiquidacionHoraFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(this.totalLiquidacionHora);
 
 
-        } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate > this.fechaMitad) {
+        } else if (this.fechaInicioDate <= this.fechaMitad && this.fechaFinDate >= this.fechaMitad) {
 
 
             this.sistemaLiquidacion = 'Sistema Múltiple';
 
             this.diasPrimerSemestre = this.day360(this.fechaInicio, this.fechaMitad);
-            this.diasSegundoSemestre = this.day360(this.fechaMitad, this.fechaFin)
 
+            this.diasSegundoSemestreNeto = this.day360(this.fechaMitad, this.fechaFin);
+
+            this.diasSegundoSemestre = this.diasSegundoSemestreNeto - 1;
 
             this.totalPrimaMesPrimerSemestre =
                 Math.round((
@@ -888,7 +900,7 @@ class App {
                             <div class="resultados" id="divPrimaPrimerSemestre">
                             <h4>Prima Primer Semestre:</h4>
                             <h4>${item.totalPrimaMesPrimerSemestreFormat}</h4></div>
-                            
+                         
                             <div class="resultados" id="divPrimaSegundoSemestre">
                             <h4>Prima Segundo Semestre:</h4>
                             <h4>${item.totalPrimaMesSegundoSemestreFormat}</h4></div>
